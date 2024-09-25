@@ -60,11 +60,6 @@ export const login = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
-
-        if (!user.isVerified) {
-            return res.status(401).json({ message: "Please verify your email" });
-        }
-
         generateTokenAndSetCookie(res, user._id);
         user.lastlogin = Date.now();
         await user.save();
