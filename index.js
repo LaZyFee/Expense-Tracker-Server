@@ -6,16 +6,26 @@ import { connectDB } from "./DB/connectDB.js";
 import authRoutes from "./Routes/authRoutes.js";
 
 const app = express();
-app.use(cors(
-    {
-        origin: "http://localhost:3000",
-        credentials: true
-    }
-));
+dotenv.config();
+
+// List of allowed origins
+const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
+
+// CORS configuration
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, origin);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
