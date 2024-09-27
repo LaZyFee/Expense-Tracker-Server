@@ -146,26 +146,58 @@ export const checkAuth = async (req, res) => {
 };
 
 export const updateProfile = async (req, res) => {
-    const { name, currentPassword, newPassword } = req.body;
+    if (!req.user) {
+        return res.status(401).json({ message: 'User not authenticated.' });
+    }
 
     try {
-        const user = await UserModel.findById(req.user.id);
-        if (!user) return res.status(404).json({ message: 'User not found.' });
+        const { name, currentPassword, newPassword } = req.body;
+        let updateFields = {}; // Initialize an empty object for updates
 
-        const isMatch = await bcrypt.compare(currentPassword, user.password);
-        if (!isMatch) return res.status(400).json({ message: 'Incorrect current password.' });
+        // Fetch the user from the database
+        const user = await UserModel.findById(req.user._id);
 
-        if (!name && !newPassword) {
-            return res.status(400).json({ message: 'Please provide a new name or password to update.' });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
         }
 
-        if (name) user.name = name;
-        if (newPassword) user.password = await bcrypt.hash(newPassword, 10);
+        // Check if the current password matches if newPassword is provided
+        if (newPassword) {
+            const isPasswordCorrect = await bcrypt.compare(currentPassword, user.password);
+            if (!isPasswordCorrect) {
+                return res.status(400).json({ message: 'Incorrect current password.' });
+            }
 
-        await user.save();
-        res.status(200).json({ message: 'Profile updated successfully.' });
+            // Hash the new password and add it to the update fields
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            updateFields.password = hashedPassword; // Update password
+        }
+
+        // Update name only if it's provided and different from the current
+        if (name && name !== user.name) {
+            updateFields.name = name; // Update name
+        }
+
+        // Update the user details in the database
+        const updateUser = await UserModel.updateOne(
+            { _id: req.user._id }, // Query by user ID
+            { $set: updateFields } // Use $set to update only the provided fields
+        );
+
+        if (updateUser.modifiedCount > 0) {
+            const updatedUser = await UserModel.findById(req.user._id).select('-password');
+            return res.status(200).json({
+                message: 'Profile updated successfully.',
+                user: updatedUser, // Send back the updated user data
+            });
+        } else {
+            return res.status(400).json({
+                message: 'No changes were made.',
+            });
+        }
     } catch (error) {
-        console.error('Error updating profile:', error); // Log the error
-        res.status(500).json({ message: 'Error updating profile.', error: error.message }); // Send back the error message
+        return res.status(500).json({
+            message: error.message,
+        });
     }
 };
