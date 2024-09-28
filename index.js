@@ -3,7 +3,13 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./DB/connectDB.js";
+
+// Routes
 import authRoutes from "./Routes/authRoutes.js";
+import expenseRoutes from "./Routes/expenseRoutes.js";
+import incomeRoutes from "./Routes/incomeRoute.js";
+import savingRoutes from "./Routes/savingRoutes.js";
+
 
 const app = express();
 dotenv.config();
@@ -34,6 +40,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", authRoutes);
+app.use("/", expenseRoutes);
+app.use("/", incomeRoutes);
+app.use("/", savingRoutes);
 
 app.listen(PORT, () => {
     connectDB();
