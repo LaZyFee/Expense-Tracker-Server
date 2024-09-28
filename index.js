@@ -6,26 +6,15 @@ import { connectDB } from "./DB/connectDB.js";
 
 // Routes
 import authRoutes from "./Routes/authRoutes.js";
-import expenseRoutes from "./Routes/expenseRoutes.js";
-import incomeRoutes from "./Routes/incomeRoute.js";
-import savingRoutes from "./Routes/savingRoutes.js";
-
+import entryRoutes from "./Routes/entryRoutes.js";
 
 const app = express();
+app.use(express.json());
 dotenv.config();
-
-// List of allowed origins
-const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
 
 // CORS configuration
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, origin);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
+    origin: "http://localhost:3000",
     credentials: true
 }));
 
@@ -40,9 +29,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", authRoutes);
-app.use("/", expenseRoutes);
-app.use("/", incomeRoutes);
-app.use("/", savingRoutes);
+
+app.use("/", entryRoutes);
 
 app.listen(PORT, () => {
     connectDB();
