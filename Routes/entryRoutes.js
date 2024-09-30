@@ -4,6 +4,7 @@ import {
     addEntry,
     updateEntry,
     deleteEntry,
+    getExpenseSummary
 } from "../Controller/entryController.js"; // A new controller that handles all entry types
 import { verifyToken } from '../Middlewares/verifyToken.js';
 
@@ -20,5 +21,8 @@ router.put("/entries/:id", verifyToken, updateEntry);
 
 // Route for deleting an entry
 router.delete("/entries/:id", verifyToken, deleteEntry);
+
+// Route for getting expense summary
+router.get("/summary", verifyToken, getExpenseSummary);
 
 export default router;

@@ -33,8 +33,9 @@ export const signup = async (req, res) => {
         await user.save();
 
         // Generate JWT token
-        generateTokenAndSetCookie(res, user._id);
+        const token = generateTokenAndSetCookie(res, user._id);
         res.status(201).json({
+            token,
             success: true,
             message: "User created successfully",
             user: {
@@ -60,11 +61,12 @@ export const login = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
-        generateTokenAndSetCookie(res, user._id);
+        const token = generateTokenAndSetCookie(res, user._id);
         user.lastlogin = Date.now();
         await user.save();
 
         res.status(200).json({
+            token,
             success: true,
             message: "Login successful",
             user: {
