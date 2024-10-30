@@ -137,6 +137,7 @@ export const resetPassword = async (req, res) => {
 
 export const checkAuth = async (req, res) => {
     try {
+        console.log("Authenticated user:", req.user); // Add logging for debugging
         const user = await UserModel.findById(req.user._id).select("-password");
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -146,6 +147,7 @@ export const checkAuth = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 export const updateProfile = async (req, res) => {
     if (!req.user) {
