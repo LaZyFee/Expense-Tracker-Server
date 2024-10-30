@@ -14,7 +14,7 @@ dotenv.config();
 
 // CORS configuration
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://expensetrackerwebappx.netlify.app"],
     credentials: true
 }));
 
