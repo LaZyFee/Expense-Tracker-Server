@@ -14,15 +14,15 @@ const router = express.Router();
 router.get("/entries/:id", getEntries);
 
 // Route for adding an entry
-router.post("/add-entry", verifyToken, addEntry);
+router.post("/add-entry", addEntry);
 
 // Route for updating an entry
-router.put("/entries/:id", verifyToken, updateEntry);
+router.put("/entries/:id", updateEntry);
 
 // Route for deleting an entry
-router.delete("/entries/:id", verifyToken, deleteEntry);
+router.delete("/entries/:id", deleteEntry);
 
 // Route for getting expense summary
-router.get("/summary", verifyToken, getExpenseSummary);
+router.get("/summary", getExpenseSummary);
 
 export default router;
