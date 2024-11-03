@@ -4,12 +4,14 @@ import mongoose from 'mongoose';
 // Get all entries
 export const getEntries = async (req, res) => {
     try {
-        const entries = await EntryModel.find({ userId: req.user.id }); // Filter by user ID
+        console.log("User ID:", req.params.id); // Log from req.params
+        const entries = await EntryModel.find({ userId: req.params.id }); // Filter by userId
         res.status(200).json(entries);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // Add a new entry
 export const addEntry = async (req, res) => {

@@ -11,7 +11,7 @@ import { verifyToken } from '../Middlewares/verifyToken.js';
 const router = express.Router();
 
 // Route for getting all entries
-router.get("/entries", verifyToken, getEntries);
+router.get("/entries/:id", getEntries);
 
 // Route for adding an entry
 router.post("/add-entry", verifyToken, addEntry);
